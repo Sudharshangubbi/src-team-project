@@ -130,6 +130,26 @@ void searchStudentByName() {
     }
 }
 
+// Suhas's contribution: Display student summary
+void displayStudentSummary() {
+    if (students.empty()) {
+        cout << "No students available.\n";
+        return;
+    }
+
+    int totalStudents = students.size();
+    int sumMarks = 0;
+    for (const auto& s : students) {
+        sumMarks += s.marks;
+    }
+    double averageMarks = static_cast<double>(sumMarks) / totalStudents;
+
+    cout << "\nStudent Summary:\n";
+    cout << "Total Students: " << totalStudents << endl;
+    cout << "Average Marks: " << averageMarks << endl;
+}
+
+// Menu system
 void mainMenu() {
     int choice;
     while (true) {
@@ -141,7 +161,8 @@ void mainMenu() {
         cout << "5. Delete Student\n";
         cout << "6. Display Top 3 Students by Marks (Shreyas)\n";
         cout << "7. Search Student by Name (Chinami)\n";
-        cout << "8. Exit\n";
+        cout << "8. Display Student Summary (Suhas)\n";
+        cout << "9. Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
         cin.ignore();
@@ -154,7 +175,8 @@ void mainMenu() {
             case 5: deleteStudent(); break;
             case 6: displayTop3StudentsByMarks(); break;
             case 7: searchStudentByName(); break;
-            case 8: cout << "Exiting...\n"; return;
+            case 8: displayStudentSummary(); break;
+            case 9: cout << "Exiting...\n"; return;
             default: cout << "Invalid choice! Try again.\n"; break;
         }
     }

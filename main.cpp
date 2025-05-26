@@ -2,154 +2,187 @@
 #include <vector>
 #include <string>
 #include <algorithm>
-
 using namespace std;
 
 class Student {
 public:
-    int id;
+    int rollNo;
     string name;
-    int age;
-    float marks;
+    int marks;
 
-    Student(int i, string n, int a, float m) : id(i), name(n), age(a), marks(m) {}
-
-    void display() {
-        cout << "ID: " << id << "\nName: " << name << "\nAge: " << age << "\nMarks: " << marks << "\n";
+    void display() const {
+        cout << "Roll No: " << rollNo << ", Name: " << name << ", Marks: " << marks << endl;
     }
 };
 
-class StudentManagement {
-private:
-    vector<Student> students;
-    int nextId = 1;
+vector<Student> students;
 
-public:
-    void addStudent(string name, int age, float marks) {
-        students.push_back(Student(nextId++, name, age, marks));
-        cout << "Student added.\n";
-    }
+// Add new student
+void addStudent() {
+    Student s;
+    cout << "Enter roll number: ";
+    cin >> s.rollNo;
+    cin.ignore();
 
-    Student* findStudent(int id) {
-        for (auto &s : students)
-            if (s.id == id) return &s;
-        return nullptr;
-    }
+    cout << "Enter name: ";
+    getline(cin, s.name);
 
-    void updateStudent(int id, string name, int age, float marks) {
-        Student* s = findStudent(id);
-        if (!s) {
-            cout << "Student not found.\n";
-            return;
-        }
-        s->name = name;
-        s->age = age;
-        s->marks = marks;
-        cout << "Student updated.\n";
-    }
+    cout << "Enter marks: ";
+    cin >> s.marks;
+    cin.ignore();
 
-    void deleteStudent(int id) {
-        auto it = remove_if(students.begin(), students.end(), [id](Student &s) { return s.id == id; });
-        if (it != students.end()) {
-            students.erase(it, students.end());
-            cout << "Student deleted.\n";
-        } else {
-            cout << "Student not found.\n";
-        }
-    }
-
-    void displayAll() {
-        cout << "Students:\n";
-        for (auto &s : students) {
-            s.display();
-            cout << "----\n";
-        }
-    }
-
-    void displayTopPerformers(int n) {
-        sort(students.begin(), students.end(), [](Student &a, Student &b) {
-            return a.marks > b.marks;
-        });
-        cout << "Top " << n << " performers:\n";
-        for (int i = 0; i < n && i < (int)students.size(); i++) {
-            students[i].display();
-            cout << "----\n";
-        }
-    }
-};
-
-void showMenu() {
-    cout << "\n--- Student Management System ---\n";
-    cout << "1. Add Student\n2. Update Student\n3. Delete Student\n4. Display All Students\n5. Display Top Performers\n6. Exit\nEnter choice: ";
+    students.push_back(s);
+    cout << "Student added successfully.\n";
 }
 
-int main() {
-    StudentManagement sm;
-    int choice;
+// Display all students
+void displayStudents() {
+    cout << "\nAll Students:\n";
+    for (const auto& s : students) {
+        s.display();
+    }
+}
 
+// Search student by roll number
+void searchStudent() {
+    int roll;
+    cout << "Enter roll number to search: ";
+    cin >> roll;
+    cin.ignore();
+
+    for (const auto& s : students) {
+        if (s.rollNo == roll) {
+            s.display();
+            return;
+        }
+    }
+    cout << "Student not found.\n";
+}
+
+// Update student marks
+void updateMarks() {
+    int roll;
+    cout << "Enter roll number to update marks: ";
+    cin >> roll;
+    cin.ignore();
+
+    for (auto& s : students) {
+        if (s.rollNo == roll) {
+            cout << "Enter new marks: ";
+            cin >> s.marks;
+            cin.ignore();
+            cout << "Marks updated successfully.\n";
+            return;
+        }
+    }
+    cout << "Student not found.\n";
+}
+
+// Delete student by roll number
+void deleteStudent() {
+    int roll;
+    cout << "Enter roll number to delete: ";
+    cin >> roll;
+    cin.ignore();
+
+    auto it = remove_if(students.begin(), students.end(),
+                        [roll](const Student& s) { return s.rollNo == roll; });
+    if (it != students.end()) {
+        students.erase(it, students.end());
+        cout << "Student deleted successfully.\n";
+    } else {
+        cout << "Student not found.\n";
+    }
+}
+
+// Shreyas's contribution: Display top 3 students by marks
+void displayTop3StudentsByMarks() {
+    if (students.empty()) {
+        cout << "No students available.\n";
+        return;
+    }
+
+    vector<Student> sortedStudents = students;
+    sort(sortedStudents.begin(), sortedStudents.end(),
+         [](const Student& a, const Student& b) { return a.marks > b.marks; });
+
+    cout << "\nTop 3 Students by Marks:\n";
+    for (size_t i = 0; i < min(sortedStudents.size(), size_t(3)); ++i) {
+        sortedStudents[i].display();
+    }
+}
+
+// Chinami's contribution: Search student by name
+void searchStudentByName() {
+    string searchName;
+    cout << "Enter name to search: ";
+    getline(cin, searchName);
+
+    bool found = false;
+    for (const auto& s : students) {
+        if (s.name == searchName) {
+            s.display();
+            found = true;
+        }
+    }
+    if (!found) {
+        cout << "Student not found with the name \"" << searchName << "\".\n";
+    }
+}
+
+// Suhas's contribution: Display summary - total students and average marks
+void displayStudentSummary() {
+    if (students.empty()) {
+        cout << "No students available.\n";
+        return;
+    }
+
+    int totalStudents = students.size();
+    int sumMarks = 0;
+    for (const auto& s : students) {
+        sumMarks += s.marks;
+    }
+    double averageMarks = static_cast<double>(sumMarks) / totalStudents;
+
+    cout << "\nStudent Summary:\n";
+    cout << "Total Students: " << totalStudents << endl;
+    cout << "Average Marks: " << averageMarks << endl;
+}
+
+void mainMenu() {
+    int choice;
     while (true) {
-        showMenu();
+        cout << "\nStudent Management System Menu:\n";
+        cout << "1. Add Student\n";
+        cout << "2. Display All Students\n";
+        cout << "3. Search Student by Roll Number\n";
+        cout << "4. Update Student Marks\n";
+        cout << "5. Delete Student\n";
+        cout << "6. Display Top 3 Students by Marks (Shreyas)\n";
+        cout << "7. Search Student by Name (Chinami)\n";
+        cout << "8. Display Student Summary (Suhas)\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
         cin >> choice;
         cin.ignore();
 
-        if (choice == 6) break;
-
         switch (choice) {
-            case 1: {
-                string name;
-                int age;
-                float marks;
-                cout << "Enter name: ";
-                getline(cin, name);
-                cout << "Enter age: ";
-                cin >> age;
-                cout << "Enter marks: ";
-                cin >> marks;
-                cin.ignore();
-                sm.addStudent(name, age, marks);
-                break;
-            }
-            case 2: {
-                int id, age;
-                float marks;
-                string name;
-                cout << "Enter student ID to update: ";
-                cin >> id;
-                cin.ignore();
-                cout << "Enter new name: ";
-                getline(cin, name);
-                cout << "Enter new age: ";
-                cin >> age;
-                cout << "Enter new marks: ";
-                cin >> marks;
-                cin.ignore();
-                sm.updateStudent(id, name, age, marks);
-                break;
-            }
-            case 3: {
-                int id;
-                cout << "Enter student ID to delete: ";
-                cin >> id;
-                cin.ignore();
-                sm.deleteStudent(id);
-                break;
-            }
-            case 4:
-                sm.displayAll();
-                break;
-            case 5: {
-                int n;
-                cout << "Enter number of top performers to display: ";
-                cin >> n;
-                cin.ignore();
-                sm.displayTopPerformers(n);
-                break;
-            }
-            default:
-OBOBOB                cout << "Invalid choice.\n";
+            case 1: addStudent(); break;
+            case 2: displayStudents(); break;
+            case 3: searchStudent(); break;
+            case 4: updateMarks(); break;
+            case 5: deleteStudent(); break;
+            case 6: displayTop3StudentsByMarks(); break;
+            case 7: searchStudentByName(); break;
+            case 8: displayStudentSummary(); break;
+            case 9: cout << "Exiting...\n"; return;
+            default: cout << "Invalid choice! Try again.\n"; break;
         }
     }
+}
 
-    cout << "Exiting...\n";
+int main() {
+    cout << "Welcome to Student Management System\n";
+    mainMenu();
     return 0;
 }

@@ -1,5 +1,3 @@
-//changes by sudharshan
-
 #include <iostream>
 #include <vector>
 #include <string>
@@ -132,7 +130,7 @@ void searchStudentByName() {
     }
 }
 
-// Suhas's contribution: Display summary - total students and average marks
+// Suhas's contribution: Display student summary
 void displayStudentSummary() {
     if (students.empty()) {
         cout << "No students available.\n";
@@ -166,6 +164,7 @@ bool authenticate() {
     }
 }
 
+// Menu system
 void mainMenu() {
     int choice;
     while (true) {

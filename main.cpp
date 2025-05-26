@@ -130,7 +130,7 @@ void searchStudentByName() {
     }
 }
 
-// Suhas's contribution: Display summary - total students and average marks
+// Suhas's contribution: Display student summary
 void displayStudentSummary() {
     if (students.empty()) {
         cout << "No students available.\n";
@@ -149,6 +149,7 @@ void displayStudentSummary() {
     cout << "Average Marks: " << averageMarks << endl;
 }
 
+// Menu system
 void mainMenu() {
     int choice;
     while (true) {

@@ -1,5 +1,3 @@
-// changes by shreyas
-
 #include <iostream>
 #include <vector>
 #include <string>
@@ -91,7 +89,7 @@ void deleteStudent() {
                         [roll](const Student& s) { return s.rollNo == roll; });
     if (it != students.end()) {
         students.erase(it, students.end());
-[O        cout << "Student deleted successfully.\n";
+        cout << "Student deleted successfully.\n";
     } else {
         cout << "Student not found.\n";
     }
@@ -114,6 +112,24 @@ void displayTop3StudentsByMarks() {
     }
 }
 
+// Chinami's contribution: Search student by name
+void searchStudentByName() {
+    string searchName;
+    cout << "Enter name to search: ";
+    getline(cin, searchName);
+
+    bool found = false;
+    for (const auto& s : students) {
+        if (s.name == searchName) {
+            s.display();
+            found = true;
+        }
+    }
+    if (!found) {
+        cout << "Student not found with the name \"" << searchName << "\".\n";
+    }
+}
+
 void mainMenu() {
     int choice;
     while (true) {
@@ -124,7 +140,8 @@ void mainMenu() {
         cout << "4. Update Student Marks\n";
         cout << "5. Delete Student\n";
         cout << "6. Display Top 3 Students by Marks (Shreyas)\n";
-        cout << "7. Exit\n";
+        cout << "7. Search Student by Name (Chinami)\n";
+        cout << "8. Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
         cin.ignore();
@@ -136,7 +153,8 @@ void mainMenu() {
             case 4: updateMarks(); break;
             case 5: deleteStudent(); break;
             case 6: displayTop3StudentsByMarks(); break;
-            case 7: cout << "Exiting...\n"; return;
+            case 7: searchStudentByName(); break;
+            case 8: cout << "Exiting...\n"; return;
             default: cout << "Invalid choice! Try again.\n"; break;
         }
     }
